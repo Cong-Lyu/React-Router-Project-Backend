@@ -1,0 +1,24 @@
+{
+  "name": "react-router-project-backend",
+  "version": "1.0.0",
+  "main": "reactRouterBackendServer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cong-Lyu/React-Router-Project-Backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cong-Lyu/React-Router-Project-Backend/issues"
+  },
+  "homepage": "https://github.com/Cong-Lyu/React-Router-Project-Backend#readme",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "resend": "^4.7.0"
+  }
+}
