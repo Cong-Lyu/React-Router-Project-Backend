@@ -3,8 +3,10 @@ const express = require('express')
 const dotenv = require('dotenv');
 dotenv.config();
 const Resend = require('resend').Resend
+const cors = require('cors');
 
 const reactRouterServer = express()
+reactRouterServer.use(cors());
 reactRouterServer.use(express.json());
 reactRouterServer.use(express.urlencoded({ extended: true }));
 
@@ -12,9 +14,9 @@ reactRouterServer.post('/api/tokenGenerator', async (req, res) => {
   const token = tokenGenerator()
   const resend = new Resend(process.env.RESEND_API_KEY);
   try {
-    await resend.emails.send({
+    const result = await resend.emails.send({
     from: 'onboarding@resend.dev',
-    to: req.body.email,
+    to: req.body['email'],
     subject: token,
     html: '<p>Congrats on sending your <strong>first email</strong>!</p>'
     });
