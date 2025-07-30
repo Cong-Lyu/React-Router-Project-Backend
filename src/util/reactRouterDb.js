@@ -45,7 +45,7 @@ async function insertToken(email) {
       const insertQuery = `INSERT INTO token(token, userId) VALUES(?, ?)`
       try {
         await pool.query(insertQuery, [token, userId])
-        return true
+        return token
       }
       catch (error) {
         console.log('Something wrong happened when inserting a token.', error)
@@ -53,10 +53,10 @@ async function insertToken(email) {
       }
     }
     else if(selectResult[0].length === 1) {
-      const updateQuery = `UPDATE token SET token = ? WHERE userId = ?`
+      const updateQuery = `UPDATE token SET token = ?, createDate = NOW() WHERE userId = ?`
       try {
         await pool.query(updateQuery, [token, userId])
-        return true
+        return token
       }
       catch (error) {
         console.log('Something wrong happened when updating a token.', error)
@@ -92,8 +92,8 @@ async function logIn(email) {
   if(result[0].length === 0) {
     const insertResult = await insertUsers({'userName': email, 'password': null})
     if(insertResult) {
-      await insertToken(email)
-      return true
+      const token = await insertToken(email)
+      return token
     }
     else {
       console.log('Something wrong with inserting a new user into db.')
@@ -103,8 +103,8 @@ async function logIn(email) {
   else if(result[0].length === 1) {
     const objectId = result[0][0]['objectId'] // get the objectId of the user to update his last log in date.
     await updateUserLastLogIn(objectId)
-    await insertToken(email)
-    return true
+    const token = await insertToken(email)
+    return token
   }
   else {
     console.log('Disastrous things happened. There are two records with the same userName!!')
@@ -112,10 +112,23 @@ async function logIn(email) {
   }
 } 
 
+async function checkTokenTime(token) {
+  const query = `SELECT TIMESTAMPDIFF(HOUR, createDate, NOW()) AS HourDiff FROM token WHERE token = ?;`
+  const result = await pool.query(query, [token])
+  console.log('token varify result:', result, typeof result[0][0]['HourDiff'], result[0][0]['HourDiff'] > 2)
+  if(result[0][0]['HourDiff'] > 2) {
+    return false
+  }
+  else {
+    return true
+  }
+}
+
 module.exports = {
   pool,
   insertUsers,
   insertToken,
   updateUserLastLogIn,
-  logIn
+  logIn,
+  checkTokenTime
 }

@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const Resend = require('resend').Resend
 const tokenGenerator = require('../util/tokenGenerator.js')
-const { pool, insertUsers, insertToken, updateUserLastLogIn, logIn } = require('../util/reactRouterDb.js')
+const { pool, insertUsers, insertToken, updateUserLastLogIn, logIn, checkTokenTime } = require('../util/reactRouterDb.js')
 
 let token = ``
 
@@ -31,11 +31,10 @@ router.post('/compareToken', async (req, res) => {
     res.status(404).json({'logInStatus': false})
   }
   else if(req.body['userInputToken'] === token) {
-    console.log(req.body['userInputToken'])
     token = ``
     const logInResult = await logIn(req.body['email'])
     if(logInResult) {
-      res.status(200).json({'logInStatus': true})
+      res.status(200).json({'logInStatus': true, 'user-token': logInResult})
     }
     else {
       res.status(404).json({'logInStatus': false})
@@ -44,6 +43,11 @@ router.post('/compareToken', async (req, res) => {
   else {
     res.status(404).json({'logInStatus': false})
   }
+})
+
+router.post('/tokenVarify', async (req, res) => {
+  const result = await checkTokenTime(req.body['user-token'])
+  res.status(200).json({'token-status': result})
 })
 
 module.exports = router
