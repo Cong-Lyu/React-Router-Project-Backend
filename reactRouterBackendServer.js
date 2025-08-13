@@ -1,3 +1,4 @@
+const express = require('express')
 const cors = require('cors');
 const routerToken = require('./src/routes/tokenRoutes.js')
 const routerPicture = require('./src/routes/publicPictureRoutes.js')
