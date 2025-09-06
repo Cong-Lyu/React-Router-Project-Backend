@@ -9,7 +9,10 @@ require('dotenv').config();
 const port = process.env.PORT || 5000
 const reactRouterServer = express()
 const corsOptions = {
-  origin: 'http://localhost:5173',
+  origin: [
+    'http://localhost:5173',
+    'http://shirahama-react-app-static.s3-website-ap-southeast-2.amazonaws.com'
+  ],
   credentials: true,
   allowedHeaders: ['Content-Type', 'X-My-JWT', 'X-Google-JWT'],
   methods: ['GET','POST','PUT','DELETE','OPTIONS']
