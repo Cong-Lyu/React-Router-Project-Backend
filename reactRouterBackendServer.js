@@ -1,6 +1,5 @@
 const express = require('express')
 const cors = require('cors');
-const routerToken = require('./src/routes/tokenRoutes.js')
 const routerPicture = require('./src/routes/publicPictureRoutes.js')
 const routerJwt = require('./src/routes/jwtVerify.js')
 const routerPremium = require('./src/routes/premiumRoutes.js')
@@ -24,7 +23,6 @@ reactRouterServer.use(cors(corsOptions));
 reactRouterServer.use(express.json());
 reactRouterServer.use(express.urlencoded({ extended: true }));
 
-reactRouterServer.use('/api/token', routerToken)
 reactRouterServer.use('/api/public', routerPicture)
 reactRouterServer.use('/api/jwt', routerJwt)
 reactRouterServer.use('/api/premium', routerPremium)

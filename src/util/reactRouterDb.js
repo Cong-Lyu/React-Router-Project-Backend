@@ -1,7 +1,6 @@
 const mysql2 = require('mysql2')
 const dotenv = require('dotenv');
 dotenv.config();
-const tokenGenerator = require('./tokenGenerator.js')
 
 const pool = mysql2.createPool({
   host: process.env.DB_HOST,
