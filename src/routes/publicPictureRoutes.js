@@ -81,13 +81,11 @@ router.get('/:type', async (req, res) => {
     if(lastPicture !== undefined) {
       const parts = splitFileName(lastPicture)
       const lastPictureName = parts[0] + parts[1]
-      console.log(lastPictureName)
       result = await pool.query(query, [leafFolderName, leafFolderName, lastPictureName, leafFolderName, lastPictureName, amount])
     }
     else {
       result = await pool.query(query, [leafFolderName, amount])
     }
-    console.log(result)
 
     const list = refactor(result[0])
     res.status(200).json({'accessPicturesStatus': true, 'pictureList': list})

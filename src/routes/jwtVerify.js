@@ -9,6 +9,7 @@ const clientId = `921371467501-6a2oag4udjf0a2u1db7a4n7teuk26q63.apps.googleuserc
 const { OAuth2Client } = require('google-auth-library')
 const client = new OAuth2Client(clientId)
 const jwt = require('jsonwebtoken')
+const { pool } = require('../util/reactRouterDb.js')
 
 router.post('/logIn', async (req, res) => {
   try {
@@ -20,22 +21,49 @@ router.post('/logIn', async (req, res) => {
     //   sameSite: 'lax'
     // })
 
-    const myJwtPayload = {
-      'sub': payload.sub,
-      'role': 'admin',
+    const query = `SELECT userRole, premiumEndDate, userName FROM users WHERE objectId = ?`
+    const result = await pool.query(query, [payload.sub])
+    if(!result[0].length) {
+      const myJwtPayload = {
+        'sub': payload.sub,
+        'role': 'general',
+        'premiumEndDate': null
+      }
+
+      const myJwt = jwt.sign(myJwtPayload, privateKey, {
+        algorithm: 'RS256', 
+        expiresIn: '1d'
+      })
+
+      // res.cookie('my-jwt', myJwt, {
+      //   httpOnly: true,
+      //   secure: false,
+      //   sameSite: 'lax'
+      // })
+      const query = `INSERT INTO users(objectId, userRole, userName, lastLogInDate) VALUES(?, ?, NULL, NOW())`
+      const insertion = await pool.query(query, [payload.sub, 'general'])
+      res.status(200).json({'googleJwt': req.body.token, 'myJwt': myJwt, 'status': true})
     }
+    else {
+      const myJwtPayload = {
+        'sub': payload.sub,
+        'role': result[0][0]['userRole'],
+        'premiumEndDate': result[0][0]['premiumEndDate']
+      }
+      const myJwt = jwt.sign(myJwtPayload, privateKey, {
+        algorithm: 'RS256', 
+        expiresIn: '1d'
+      })
 
-    const myJwt = jwt.sign(myJwtPayload, privateKey, {
-      algorithm: 'RS256', 
-      expiresIn: '1d'
-    })
-
-    // res.cookie('my-jwt', myJwt, {
-    //   httpOnly: true,
-    //   secure: false,
-    //   sameSite: 'lax'
-    // })
-    res.status(200).json({'googleJwt': req.body.token, 'myJwt': myJwt, 'status': true})
+      // res.cookie('my-jwt', myJwt, {
+      //   httpOnly: true,
+      //   secure: false,
+      //   sameSite: 'lax'
+      // })
+      const query = `UPDATE users SET lastLogInDate = NOW() WHERE objectId = ?`
+      const updateLogindate = await pool.query(query, [payload.sub])
+      res.status(200).json({'googleJwt': req.body.token, 'myJwt': myJwt, 'status': true})
+    }
   }
   catch(err) {
     console.log(err)

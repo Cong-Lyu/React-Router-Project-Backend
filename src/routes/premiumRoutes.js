@@ -11,9 +11,10 @@ const { OAuth2Client } = require('google-auth-library')
 const client = new OAuth2Client(clientId)
 const jwt = require('jsonwebtoken')
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY)
+const { pool } = require('../util/reactRouterDb.js')
 
 router.post('/payment', async (req, res) => {
-  const { paymentId, premiumType, length, startDate, endDate, returnUrl } = req.body
+  const { paymentId, premiumType, length, 'start-date': startDate, 'end-date': endDate, returnUrl } = req.body
   const plansAmount = {
     'Yourself-only': 1599,
     'Family-set': 3899,
@@ -29,7 +30,6 @@ router.post('/payment', async (req, res) => {
       confirm: true,
       return_url: returnUrl
     })
-    console.log(paymentIntent)
 
     if(paymentIntent.status === 'succeeded') {
       const myJwt = req.headers['x-my-jwt']
@@ -40,22 +40,24 @@ router.post('/payment', async (req, res) => {
 
       const vipJwtPayload = {
       'sub': payload.sub,
-      'role': 'vip',
+      'role': 'premium',
       'vipEndDate': endDate
       }
       const newVipJwt = jwt.sign(vipJwtPayload, privateKey, {
         algorithm: 'RS256', 
         expiresIn: '1d'
       })
-
-      return res.status(200).json({ 
+      
+      const query = `UPDATE users SET userRole = ?, premiumStartDate = ?, premiumEndDate = ? WHERE objectId = ?`
+      const updateRoleAndDate = await pool.query(query, ['premium', startDate, endDate, payload.sub])
+      res.status(200).json({ 
         'payment-status': true, 
         'paymentIntentId': paymentIntent.id, 
         'googleJwt': req.headers['x-google-jwt'], 
         'myJwt': newVipJwt
       })
     } else {
-      return res.status(200).json({ 'payment-status': false })
+      res.status(200).json({ 'payment-status': false })
     }
   } 
   catch(err) {
