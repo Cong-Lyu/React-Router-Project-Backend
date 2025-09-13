@@ -3,6 +3,7 @@ const cors = require('cors');
 const routerToken = require('./src/routes/tokenRoutes.js')
 const routerPicture = require('./src/routes/publicPictureRoutes.js')
 const routerJwt = require('./src/routes/jwtVerify.js')
+const routerPremium = require('./src/routes/premiumRoutes.js')
 // const cookieParser = require('cookie-parser')
 require('dotenv').config();
 
@@ -26,6 +27,7 @@ reactRouterServer.use(express.urlencoded({ extended: true }));
 reactRouterServer.use('/api/token', routerToken)
 reactRouterServer.use('/api/public', routerPicture)
 reactRouterServer.use('/api/jwt', routerJwt)
+reactRouterServer.use('/api/premium', routerPremium)
 
 reactRouterServer.listen(port, () => {
   console.log(`Now react Router SERVER is listening request at ${port}......`)
