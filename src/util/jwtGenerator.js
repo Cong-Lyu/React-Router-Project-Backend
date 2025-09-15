@@ -25,7 +25,7 @@ function userJwtIssuer(sub, userRole, premiumEndDate) {
 
   const myJwt = jwt.sign(myJwtPayload, privateKey, {
     algorithm: 'RS256', 
-    expiresIn: '1d'
+    expiresIn: '1h'
   })
   return myJwt
 }
