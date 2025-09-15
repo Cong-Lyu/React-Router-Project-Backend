@@ -9,6 +9,7 @@ const jwt = require('jsonwebtoken')
 const { userJwtIssuer, googleJwtVerify } = require('../util/jwtGenerator.js')
 const { updateUserRole } = require('../util/reactRouterDb.js')
 const { paymentProcessor } = require('../util/premiumPaymentProcessor.js')
+const { isTodayOrFuture } = require('../util/premiumLogic.js')
 
 router.post('/payment', async (req, res) => {
   const { paymentId, premiumType, length, 'start-date': startDate, 'end-date': endDate, returnUrl } = req.body
@@ -36,6 +37,20 @@ router.post('/payment', async (req, res) => {
     console.error(err)
     return res.json({ 'payment-status': false, 'error': err.message })
   }
+})
+
+router.get('/premiumCheck', async (req, res) => {
+  try {
+    const myJwt = req.headers['x-my-jwt']
+    const googleJwt = req.headers['x-google-jwt']
+    const payload = await googleJwtVerify(googleJwt)
+    jwt.verify(myJwt, publicKey)
+    const myPayload = jwt.decode(myJwt)
+
+    if(myPayload['role'] === 'premium' && isTodayOrFuture(myPayload['premiumEndDate'])) {res.status(200).json({'premium-status': true})}
+    else {res.status(401).json({'premium-status': false})}
+  }
+  catch(err) {console.log(err); res.status(401).json({'premium-status': false})}
 })
 
 module.exports = router
