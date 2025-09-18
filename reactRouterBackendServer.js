@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors');
 const routerPicture = require('./src/routes/publicPictureRoutes.js')
-const routerJwt = require('./src/routes/jwtVerify.js')
+const routerJwt = require('./src/routes/jwtVerifyRoutes.js')
 const routerPremium = require('./src/routes/premiumRoutes.js')
 // const cookieParser = require('cookie-parser')
 require('dotenv').config();

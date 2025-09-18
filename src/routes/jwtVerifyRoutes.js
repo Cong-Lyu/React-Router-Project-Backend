@@ -11,6 +11,8 @@ const client = new OAuth2Client(clientId)
 const jwt = require('jsonwebtoken')
 const { insertUsers, updateUserLastLogIn, findUserId } = require('../util/reactRouterDb.js')
 const { googleJwtVerify, userJwtIssuer } = require('../util/jwtGenerator.js')
+const { jwtVerify } = require('../middleware/jwtVerify.js')
+const { userInfoCollect } = require('../middleware/userInfoProcess.js')
 
 router.post('/logIn', async (req, res) => {
   try {
@@ -49,17 +51,12 @@ router.post('/logIn', async (req, res) => {
   }
 })
 
-router.get('/jwtVarify', async (req, res) => {
-  const myJwt = req.headers['x-my-jwt']
-  const googleJwt = req.headers['x-google-jwt']
-  try {
-    await client.verifyIdToken({idToken: googleJwt, audience: clientId})
-    jwt.verify(myJwt, publicKey)
-    res.status(200).json({'status': true})
-  }
-  catch(err) {
-    res.status(401).json({'status': false})
-  }
+router.get('/jwtVarify', jwtVerify, (req, res) => {
+  res.status(200).json({'status': true})
+})
+
+router.get('/userInfo', jwtVerify, userInfoCollect, (req, res) => {
+  res.status(200).json({'userInfo': res.locals.userInfo, 'status': true})
 })
 
 module.exports = router
