@@ -18,13 +18,17 @@
   "homepage": "https://github.com/Cong-Lyu/React-Router-Project-Backend#readme",
   "description": "",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.895.0",
+    "@aws-sdk/s3-request-presigner": "^3.895.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "google-auth-library": "^10.3.0",
+    "install": "^0.13.0",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.14.2",
+    "npm": "^11.6.0",
     "resend": "^4.7.0",
     "stripe": "^18.5.0"
   }
