@@ -52,7 +52,7 @@ router.post('/logIn', async (req, res) => {
 })
 
 router.get('/jwtVarify', jwtVerify, (req, res) => {
-  res.status(200).json({'status': true})
+  res.status(200).json({'status': true, 'userId': res.locals.googlePayload.sub})
 })
 
 router.get('/userInfo', jwtVerify, userInfoCollect, (req, res) => {
