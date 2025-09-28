@@ -1,6 +1,5 @@
 const mysql2 = require('mysql2')
 const dotenv = require('dotenv')
-const crypto = require('crypto')
 dotenv.config();
 
 const pool = mysql2.createPool({
@@ -46,8 +45,7 @@ async function updateUserRole(userRole, startDate, endDate, objectId) {
   }
 }
 
-async function insertVideo(userId, fileType, fileSize) {
-  const objectId = crypto.randomBytes(16).toString('hex')
+async function insertVideo(objectId, userId, fileType, fileSize) {
   const query = `INSERT INTO videos(objectId, userId, fileSize, fileType) VALUES(?, ?, ?, ?)`
   try {
     const insertResult = await pool.query(query, [objectId, userId, fileSize, fileType])
@@ -56,11 +54,22 @@ async function insertVideo(userId, fileType, fileSize) {
   catch(err) {console.log(err)}
 }
 
+async function getVideoList(userId) {
+  const query = `SELECT objectId FROM videos WHERE userId = ?`
+  try {
+    const result = await pool.query(query, [userId])
+    const videoList = result[0].map((item) => {return item['objectId']})
+    return videoList
+  }
+  catch(err) {console.log(err); return null}
+}
+
 module.exports = {
   pool,
   insertUsers,
   findUserId,
   updateUserLastLogIn,
   updateUserRole,
-  insertVideo
+  insertVideo,
+  getVideoList
 }
