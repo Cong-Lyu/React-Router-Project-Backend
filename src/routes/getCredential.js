@@ -16,11 +16,11 @@ const { userInfoCollect } = require('../middleware/userInfoProcess.js')
 const { getCredential } = require('../middleware/uploadCredential.js')
 
 router.get('/credential', jwtVerify, getCredential, (req, res) => {
-  res.status(200).json({'status': true, 'credential': res.locals.credential})
+  res.status(200).json({'status': true, 'credential': res.locals.credential, 'videoId': res.locals.videoId})
 })
 
 router.post('/insertRecord', jwtVerify, async (req, res) => {
-  const insertion =  await insertVideo(res.locals.googlePayload.sub, req.body.fileType, req.body.fileSize)
+  const insertion =  await insertVideo(req.body.videoId, res.locals.googlePayload.sub, req.body.fileType, req.body.fileSize)
   if(insertion) {res.status(200).json({'insertStatus': true})}
   else {res.status(500).json({'insertStatus': false})}
 })
