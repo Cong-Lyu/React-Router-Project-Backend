@@ -1,9 +1,9 @@
+const crypto = require('crypto')
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 async function getCredential(req, res, next) {
   try {
-    const userId = res.locals.googlePayload.sub
     const s3Client = new S3Client({ 
       region: "ap-southeast-2",
       credentials: {
@@ -11,7 +11,8 @@ async function getCredential(req, res, next) {
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
       }
     })
-    const fileName = userId
+    const fileName = crypto.randomBytes(16).toString('hex')
+    res.locals.videoId = fileName
     const fileType = req.query.fileType
     if(!fileName || !fileType) {return res.status(400).json({ status: false, message: "Missing fileName or fileType" })}
 
