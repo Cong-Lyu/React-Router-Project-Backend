@@ -36,7 +36,7 @@ pipeline {
                         # ⚠️ 必须替换这里的 S3 存储桶名 ⚠️
                         # 格式通常是：elasticbeanstalk-你的区域-你的AWS账号ID
                         # 假设您的 S3 存储桶名为: elasticbeanstalk-ap-southeast-2-123456789012 (请替换成您真实的桶名!)
-                        S3_BUCKET="elasticbeanstalk-ap-southeast-2-YOUR_ACCOUNT_ID" 
+                        S3_BUCKET="elasticbeanstalk-ap-southeast-2-506511511051" 
                         
                         echo "正在上传应用版本: ${EB_VERSION} 到 S3 存储桶: ${S3_BUCKET}..."
                         
