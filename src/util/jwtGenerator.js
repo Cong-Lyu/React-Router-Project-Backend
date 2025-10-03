@@ -1,7 +1,5 @@
-const fs = require('fs')
-const path = require('path')
 const privateKey = process.env.MY_PRIVATE_KEY
-const publicKey = fs.readFileSync(path.join(__dirname, '../../public.pem'), 'utf8')
+const publicKey = process.env.MY_PUBLIC_KEY
 const clientId = `921371467501-6a2oag4udjf0a2u1db7a4n7teuk26q63.apps.googleusercontent.com`
 const { OAuth2Client } = require('google-auth-library')
 const client = new OAuth2Client(clientId)

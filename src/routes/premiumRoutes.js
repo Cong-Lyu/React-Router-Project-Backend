@@ -1,10 +1,8 @@
 const express = require('express')
 const router = express.Router()
 require('dotenv').config();
-const fs = require('fs')
-const path = require('path')
-const privateKey = fs.readFileSync(path.join(__dirname, '../../private.pem'), 'utf8')
-const publicKey = fs.readFileSync(path.join(__dirname, '../../public.pem'), 'utf8')
+const privateKey = process.env.MY_PRIVATE_KEY
+const publicKey = process.env.MY_PUBLIC_KEY
 const jwt = require('jsonwebtoken')
 const { userJwtIssuer, googleJwtVerify } = require('../util/jwtGenerator.js')
 const { updateUserRole } = require('../util/reactRouterDb.js')
