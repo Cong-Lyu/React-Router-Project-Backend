@@ -19,9 +19,7 @@ async function jwtVerify(req, res, next) {
     res.locals.myJwtPayload = myJwtPayload
     next()
   }
-  catch(err) {
-    res.status(401).json({'status': false})
-  }
+  catch(err) {console.log(err); res.status(401).json({'status': false, 'error': err})}
 } 
 
 module.exports = {
