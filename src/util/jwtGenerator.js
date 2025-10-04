@@ -18,6 +18,7 @@ async function googleJwtVerify(googleToken) {
 }
 
 function userJwtIssuer(sub, userRole, premiumEndDate) {
+  console.log('This is key outputs:', privateKey, publicKey)
   const myJwtPayload = {
     'sub': sub,
     'role': userRole,
