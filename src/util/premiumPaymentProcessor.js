@@ -1,5 +1,5 @@
 const Stripe = require('stripe')
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY) //test jenkins
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY) //test jenkins2
 
 async function paymentProcessor(length, premiumType, paymentId, returnUrl) {
   const plansAmount = {
