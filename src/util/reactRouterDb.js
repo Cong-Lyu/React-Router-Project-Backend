@@ -45,20 +45,20 @@ async function updateUserRole(userRole, startDate, endDate, objectId) {
   }
 }
 
-async function insertVideo(objectId, userId, fileType, fileSize) {
-  const query = `INSERT INTO videos(objectId, userId, fileSize, fileType) VALUES(?, ?, ?, ?)`
+async function insertVideo(objectId, userId, fileType, fileSize, videoTitle) {
+  const query = `INSERT INTO videos(objectId, userId, fileSize, fileType, videoTitle) VALUES(?, ?, ?, ?, ?)`
   try {
-    const insertResult = await pool.query(query, [objectId, userId, fileSize, fileType])
+    const insertResult = await pool.query(query, [objectId, userId, fileSize, fileType, videoTitle])
     return insertResult[0].affectedRows === 1
   }
   catch(err) {console.log(err)}
 }
 
 async function getVideoList(userId) {
-  const query = `SELECT objectId FROM videos WHERE userId = ?`
+  const query = `SELECT objectId, videoTitle FROM videos WHERE userId = ?`
   try {
     const result = await pool.query(query, [userId])
-    const videoList = result[0].map((item) => {return item['objectId']})
+    const videoList = result[0].map((item) => {return [item['objectId'], item['videoTitle']]})
     return videoList
   }
   catch(err) {console.log(err); return null}
