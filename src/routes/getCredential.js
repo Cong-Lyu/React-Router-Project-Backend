@@ -20,7 +20,7 @@ router.get('/credential', jwtVerify, getCredential, (req, res) => {
 })
 
 router.post('/insertRecord', jwtVerify, async (req, res) => {
-  const insertion =  await insertVideo(req.body.videoId, res.locals.googlePayload.sub, req.body.fileType, req.body.fileSize)
+  const insertion =  await insertVideo(req.body.videoId, res.locals.googlePayload.sub, req.body.fileType, req.body.fileSize, req.body.videoTitle)
   if(insertion) {res.status(200).json({'insertStatus': true})}
   else {res.status(500).json({'insertStatus': false})}
 })
